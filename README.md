@@ -8,6 +8,9 @@ This tool will not use an existing `composer.lock`-file, so pulling may be slowe
 
 Please note that `php-cli` 5.6+ should be installed on your system, as well as [Composer](https://getcomposer.org/download/).
 
+Run the following script on any Linux based machine:
+If you wish a different path than `/usr/local/bin` you can modify the last two lines.
+
 ```bash
 wget https://raw.githubusercontent.com/FaimMedia/composer-override/master/composer-override -nv -O composer-override
 
