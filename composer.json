@@ -1,0 +1,15 @@
+{
+	"name": "faimmedia/composer-override",
+	"description": "Composer override tool for development",
+	"homepage": "https://faimmedia.nl",
+
+	"authors": [{
+		"email": "info@faimmedia.nl",
+		"name": "Tim Peters",
+		"role": "Developer"
+	}],
+
+	"require": {
+		"composer/composer": "^2.0"
+	}
+}
