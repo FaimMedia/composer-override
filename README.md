@@ -9,10 +9,11 @@ This tool will not use an existing `composer.lock`-file, so pulling may be slowe
 Please note that `php-cli` 5.6+ should be installed on your system, as well as [https://getcomposer.org/download/](Composer).
 
 ```bash
-wget -O https://github.com/FaimMedia/composer-override/composer-override
+wget -O https://raw.githubusercontent.com/FaimMedia/composer-override/master/composer-override
 
-sudo mv composer-override /usr/local/bin/composer-override
-sudo chmod +x /usr/local/bin/composer-override
+php -r "if(hash_file('md5', 'composer-override') !== '9f27f51d17f0313f2ff8f8609f5d39f2') { print \"Invalid checksum\r\n\"; exit(1); }" \
+	&& sudo mv composer-override /usr/local/bin/composer-override \
+	&& sudo chmod +x /usr/local/bin/composer-override
 ```
 
 ## Usage
