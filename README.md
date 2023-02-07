@@ -6,7 +6,7 @@ This tool will not use an existing `composer.lock`-file, so pulling may be slowe
 
 ## Install
 
-Please note that `php-cli` 5.6+ should be installed on your system, as well as [https://getcomposer.org/download/](Composer).
+Please note that `php-cli` 5.6+ should be installed on your system, as well as [Composer](https://getcomposer.org/download/).
 
 ```bash
 wget https://raw.githubusercontent.com/FaimMedia/composer-override/master/composer-override -nv -O composer-override
