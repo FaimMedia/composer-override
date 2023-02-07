@@ -1,0 +1,106 @@
+#!/usr/bin/env php
+<?php
+
+define('ROOT', realpath('.') . '/');
+
+$composerBin = exec('which composer');
+if (!$composerBin) {
+	echo "\033[0;31mComposer is not installed on this system\e[0m" . PHP_EOL;
+	die(1);
+}
+
+if (!file_exists(ROOT . 'composer.json')) {
+	echo "\033[0;31mNot composer.json file exists in this directory\e[0m" . PHP_EOL;
+	die(1);
+}
+
+$temp = tempnam('', 'composer.');
+
+echo 'Creating temporary composer file in ' . $temp . PHP_EOL;
+
+$passedArgs = [...$argv];
+unset($passedArgs[0]);
+
+// remove specific composer-override params
+foreach ($passedArgs as $index => $arg) {
+	if ($arg === '--dev') {
+		unset($passedArgs[$index]);
+	}
+
+	if (substr($arg, 0, 14) === '--working-dir=') {
+		unset($passedArgs[$index]);
+	}
+
+	if ($arg === '--copy-lock') {
+		unset($passedArgs[$index]);
+	}
+}
+
+$args = [
+	'COMPOSER=' . escapeshellarg($temp),
+	'composer',
+	'update',
+	'--working-dir=' . escapeshellarg(ROOT),
+	...$passedArgs,
+];
+
+if (!in_array('--dev', $argv)) {
+	echo "\033[0;32mOnly production packages\e[0m" . PHP_EOL;
+
+	$args[] = '--no-dev';
+	$args[] = '--optimize-autoloader';
+} else {
+	echo "\033[0;33mInclude development packages\e[0m" . PHP_EOL;
+}
+
+$content = file_get_contents(ROOT . 'composer.json');
+
+$overrideFile = ROOT . 'composer.override.json';
+if (file_exists($overrideFile)) {
+	echo "\033[0;33mMerging override file\e[0m" . PHP_EOL;
+
+	$json = json_decode($content, true);
+	if (json_last_error() !== JSON_ERROR_NONE) {
+		echo "\033[0;33mInvalid composer.json file: " . json_last_error_msg() . "\e[0m";
+		die(1);
+	}
+
+	$overrideContent = file_get_contents(ROOT . 'composer.override.json');
+	$overrideJson = json_decode($overrideContent, true);
+
+	if (json_last_error() !== JSON_ERROR_NONE) {
+		echo "\033[0;33mInvalid composer.override.json file: " . json_last_error_msg() . "\e[0m";
+		die(1);
+	}
+
+	$merged = array_replace_recursive(
+		$json,
+		$overrideJson
+	);
+
+	$content = json_encode($merged, JSON_PRETTY_PRINT);
+}
+
+$fopen = fopen($temp, 'w');
+fwrite($fopen, $content);
+fclose($fopen);
+
+$exitCode = 0;
+$output = null;
+exec(join(' ', $args), $output, $exitCode);
+if ($exitCode > 0) {
+    die($exitCode);
+}
+
+if (in_array('--copy-lock', $argv)) {
+	if (file_exists($temp . '.lock')) {
+		copy($temp . '.lock', ROOT . 'composer.lock');
+		echo "\033[0;32mCopied composer.lock file\e[0m" . PHP_EOL;
+	}
+}
+
+// reset composer variable
+exec('COMPOSER=');
+
+@unlink($temp . '.lock');
+@unlink($temp);
