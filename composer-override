@@ -39,7 +39,7 @@ foreach ($passedArgs as $index => $arg) {
 $args = [
 	'COMPOSER=' . escapeshellarg($temp),
 	'composer',
-	'update',
+	'install',
 	'--working-dir=' . escapeshellarg(ROOT),
 	...$passedArgs,
 ];

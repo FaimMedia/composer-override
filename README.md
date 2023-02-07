@@ -14,7 +14,7 @@ If you wish a different path than `/usr/local/bin` you can modify the last two l
 ```bash
 wget https://raw.githubusercontent.com/FaimMedia/composer-override/master/composer-override -nv -O composer-override
 
-php -r "if(hash_file('md5', 'composer-override') !== '9f27f51d17f0313f2ff8f8609f5d39f2') { print \"Invalid checksum\r\n\"; exit(1); }" \
+php -r "if(hash_file('md5', 'composer-override') !== '2d2d98355db4bf9893e2689c4f2cf490') { print \"Invalid checksum\r\n\"; exit(1); }" \
 	&& sudo mv composer-override /usr/local/bin/composer-override \
 	&& sudo chmod +x /usr/local/bin/composer-override
 ```
